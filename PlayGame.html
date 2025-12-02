@@ -287,7 +287,7 @@
   <section class="badge-section">
     <strong>Your Progress Badges</strong>
     <div class="badge-list" id="badgeList">
-      <span>Participant 🎓</span>
+      <span>Participant</span>
     </div>
     <p id="bonusText" class="hidden" style="margin-top:8px;">
       You’ve completed all three levels. You are now ready to design your own agent‑assisted Excel workflows.
@@ -296,7 +296,7 @@
 </div>
 
 <script>
-  // 1. Your form embed URLs (from the snippet you gave)
+  // 1. Your form embed URLs
   const formUrls = {
     1: "https://docs.google.com/forms/d/e/1FAIpQLSeb0OnQCLD3nlercx2Gd9wXty6QWyvwq787mvXibVKs-chbXg/viewform?embedded=true", // Copilot
     2: "https://docs.google.com/forms/d/e/1FAIpQLSflVLl1iPh3KgXRiuh5IbgA7706j3CfrNGQxMXUCZzz-4G2ng/viewform?embedded=true", // Manus
@@ -310,10 +310,17 @@
     3: "Level 3: Julius.AI – Analytical Intelligence"
   };
 
-  // 3. Configure your unlock codes (must match Google Forms confirmation)
+  // Helper: build codes from character codes + year
+  function buildCode(charCodes, year) {
+    return String.fromCharCode.apply(null, charCodes) + String(year);
+  }
+
+  // 3. Unlock codes (obfuscated: no plain text codes in the HTML)
+  // Level 2 code: COPILOT2025  -> [67,79,80,73,76,79,84] + 2025
+  // Level 3 code: MANUS2025    -> [77,65,78,85,83] + 2025
   const expectedCodes = {
-    2: "COPILOT2025", // Code that unlocks Level 2 (from Copilot form)
-    3: "MANUS2025"    // Code that unlocks Level 3 (from Manus form)
+    2: buildCode([67,79,80,73,76,79,84], 2025),
+    3: buildCode([77,65,78,85,83], 2025)
   };
 
   // Track which levels are unlocked (1 is always unlocked)
@@ -429,10 +436,10 @@
 
     // Update badges
     const badgeList = document.getElementById("badgeList");
-    badgeList.innerHTML = '<span>Participant 🎓</span>';
-    if (progressState[1]) badgeList.innerHTML += '<span>Copilot Practitioner ✅</span>';
-    if (progressState[2]) badgeList.innerHTML += '<span>Manus Automator ⚙️</span>';
-    if (progressState[3]) badgeList.innerHTML += '<span>Julius.AI Analyst 📊</span>';
+    badgeList.innerHTML = '<span>Participant</span>';
+    if (progressState[1]) badgeList.innerHTML += '<span>Copilot Practitioner</span>';
+    if (progressState[2]) badgeList.innerHTML += '<span>Manus Automator</span>';
+    if (progressState[3]) badgeList.innerHTML += '<span>Julius.AI Analyst</span>';
 
     // Bonus message
     const bonusText = document.getElementById("bonusText");
