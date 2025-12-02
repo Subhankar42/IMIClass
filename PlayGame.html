@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Agents in Excel: Copilot, Manus & Julius.AI</title>
+  <title>Agents in Excel: Copilot, Manus &amp; Julius.AI</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -74,7 +74,7 @@
       display: flex;
       flex-direction: column;
       gap: 8px;
-      min-height: 180px;
+      min-height: 200px;
     }
     .level-title {
       font-weight: 600;
@@ -138,6 +138,26 @@
     .status-error {
       color: #e74c3c;
     }
+    .open-btn {
+      margin-top: 8px;
+      align-self: flex-start;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      background: #3498db;
+      color: #f7f7ff;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .open-btn[disabled] {
+      background: #3b4a6a;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    .open-btn:not([disabled]):hover {
+      background: #2980b9;
+    }
     .iframe-wrapper {
       margin-top: 16px;
       border-radius: 10px;
@@ -198,10 +218,11 @@
       <div class="level-title">Level 1: Copilot – Assisted Insight</div>
       <span class="tag tag-unlocked">Unlocked</span>
       <div class="level-body">
-        In this level you will use Microsoft Copilot in Excel to explore data, generate formulas,
-        and obtain quick summaries using natural language. When you submit the quiz, you’ll receive
-        a code that unlocks Level 2 (Manus – Structured Automation).
+        Use Microsoft Copilot in Excel to explore data, generate formulas,
+        and obtain quick summaries using natural language. When you submit the quiz,
+        you’ll receive a code that unlocks Level 2 (Manus – Structured Automation).
       </div>
+      <button class="open-btn" onclick="loadLevel(1)">Open Level 1</button>
     </article>
 
     <!-- Level 2 (locked until code) -->
@@ -209,15 +230,19 @@
       <div class="level-title">Level 2: Manus – Structured Automation</div>
       <span id="tagLevel2" class="tag tag-locked">Locked</span>
       <div class="level-body">
-        Here the focus shifts from one-off actions to repeatable processes. Use your completion
-        code from the Copilot quiz to unlock this level and work with Manus to orchestrate
-        multi-step Excel workflows.
+        Shift from one-off actions to repeatable processes. Use your completion
+        code from the Copilot quiz to unlock this level and work with Manus
+        to orchestrate multi-step Excel workflows.
       </div>
       <div class="code-input">
-        <input id="codeLevel1" type="text" placeholder="Enter code from Copilot (Level 1) confirmation" />
+        <input id="codeLevel1" type="text"
+               placeholder="Enter code from Copilot (Level 1) confirmation" />
         <button onclick="unlockLevel(2)">Unlock</button>
       </div>
       <div id="statusLevel2" class="status-message"></div>
+      <button id="openLevel2Btn" class="open-btn" onclick="loadLevel(2)" disabled>
+        Open Level 2
+      </button>
     </article>
 
     <!-- Level 3 (locked until code) -->
@@ -225,49 +250,34 @@
       <div class="level-title">Level 3: Julius.AI – Analytical Intelligence</div>
       <span id="tagLevel3" class="tag tag-locked">Locked</span>
       <div class="level-body">
-        The final level focuses on deeper, decision-oriented analysis. Use the completion code
-        from the Manus quiz to unlock this level and apply Julius.AI to ask richer questions
-        of your data and interpret the results.
+        Focus on deeper, decision-oriented analysis. Use the completion code
+        from the Manus quiz to unlock this level and apply Julius.AI to ask
+        richer questions of your data and interpret the results.
       </div>
       <div class="code-input">
-        <input id="codeLevel2" type="text" placeholder="Enter code from Manus (Level 2) confirmation" />
+        <input id="codeLevel2" type="text"
+               placeholder="Enter code from Manus (Level 2) confirmation" />
         <button onclick="unlockLevel(3)">Unlock</button>
       </div>
       <div id="statusLevel3" class="status-message"></div>
+      <button id="openLevel3Btn" class="open-btn" onclick="loadLevel(3)" disabled>
+        Open Level 3
+      </button>
     </article>
   </section>
 
-  <!-- Actual Google Forms (only visible when unlocked) -->
+  <!-- Single Activity Area with one iframe -->
   <section style="margin-top: 30px;">
     <h2>Activity Area</h2>
     <p style="font-size:0.9rem; opacity:0.9;">
-      Work through each level in order. Complete the quiz, note the code in the confirmation message,
-      and return here to unlock the next level.
+      Currently showing:
+      <strong><span id="currentLevelName">Level 1: Copilot – Assisted Insight</span></strong>
     </p>
-
-    <!-- Level 1 Form -->
     <div class="iframe-wrapper">
-      <!-- Replace src with your Level 1 (Copilot) form embed src -->
+      <!-- This is the ONLY iframe; its src changes when you switch levels -->
       <iframe 
-        src="https://docs.google.com/forms/d/e/1FAIpQLSeb0OnQCLD3nlercx2Gd9wXty6QWyvwq787mvXibVKs-chbXg/viewform"
-        allowfullscreen>
-      </iframe>
-    </div>
-
-    <!-- Level 2 Form -->
-    <div id="formLevel2" class="iframe-wrapper hidden">
-      <!-- Replace src with your Level 2 (Manus) form embed src -->
-      <iframe 
-        src="https://docs.google.com/forms/d/e/1FAIpQLSflVLl1iPh3KgXRiuh5IbgA7706j3CfrNGQxMXUCZzz-4G2ng/viewform"
-        allowfullscreen>
-      </iframe>
-    </div>
-
-    <!-- Level 3 Form -->
-    <div id="formLevel3" class="iframe-wrapper hidden">
-      <!-- Replace src with your Level 3 (Julius.AI) form embed src -->
-      <iframe 
-        src="https://docs.google.com/forms/d/e/1FAIpQLSeOtanrYiiUQ2KDAxhCJqYnkp92nehWCeSFozFUVBN75j5FmQ/viewform"
+        id="activityFrame"
+        src=""
         allowfullscreen>
       </iframe>
     </div>
@@ -286,7 +296,21 @@
 </div>
 
 <script>
-  // Configure your codes here (must match the messages in Google Forms)
+  // 1. Your form embed URLs (from the snippet you gave)
+  const formUrls = {
+    1: "https://docs.google.com/forms/d/e/1FAIpQLSeb0OnQCLD3nlercx2Gd9wXty6QWyvwq787mvXibVKs-chbXg/viewform?embedded=true", // Copilot
+    2: "https://docs.google.com/forms/d/e/1FAIpQLSflVLl1iPh3KgXRiuh5IbgA7706j3CfrNGQxMXUCZzz-4G2ng/viewform?embedded=true", // Manus
+    3: "https://docs.google.com/forms/d/e/1FAIpQLSeOtanrYiiUQ2KDAxhCJqYnkp92nehWCeSFozFUVBN75j5FmQ/viewform?embedded=true"  // Julius.AI
+  };
+
+  // 2. Level display names
+  const levelNames = {
+    1: "Level 1: Copilot – Assisted Insight",
+    2: "Level 2: Manus – Structured Automation",
+    3: "Level 3: Julius.AI – Analytical Intelligence"
+  };
+
+  // 3. Configure your unlock codes (must match Google Forms confirmation)
   const expectedCodes = {
     2: "COPILOT2025", // Code that unlocks Level 2 (from Copilot form)
     3: "MANUS2025"    // Code that unlocks Level 3 (from Manus form)
@@ -299,6 +323,8 @@
     3: false
   };
 
+  let currentLevel = 1;
+
   // Load saved progress from this browser
   (function loadProgress() {
     try {
@@ -308,7 +334,9 @@
         progressState[3] = !!saved.level3;
       }
     } catch (e) {}
+    // Initialize UI and default to Level 1 in the iframe
     updateUI();
+    loadLevel(1);
   })();
 
   function saveProgress() {
@@ -340,7 +368,7 @@
     if (entered === expected) {
       progressState[level] = true;
       saveProgress();
-      statusEl.textContent = "Level unlocked. Scroll down to access the activity.";
+      statusEl.textContent = "Level unlocked. You can now open this level in the activity area.";
       statusEl.className = "status-message status-ok";
       tagEl.textContent = "Unlocked";
       tagEl.className = "tag tag-unlocked";
@@ -351,21 +379,42 @@
     }
   }
 
-  function updateUI() {
-    // Update forms visibility
-    document.getElementById("formLevel2").classList.toggle("hidden", !progressState[2]);
-    document.getElementById("formLevel3").classList.toggle("hidden", !progressState[3]);
+  function loadLevel(level) {
+    // Only allow loading unlocked levels
+    if (!progressState[level]) {
+      alert("This level is still locked. Complete the previous quiz and enter the unlock code first.");
+      return;
+    }
+    const frame = document.getElementById("activityFrame");
+    const label = document.getElementById("currentLevelName");
 
-    // Update tags in case progress was loaded from storage
+    if (!formUrls[level]) {
+      frame.src = "";
+      label.textContent = "No form URL configured for this level.";
+      return;
+    }
+
+    currentLevel = level;
+    frame.src = formUrls[level];
+    label.textContent = levelNames[level] || ("Level " + level);
+  }
+
+  function updateUI() {
+    // Update unlock tags and buttons
     if (progressState[2]) {
       const tag2 = document.getElementById("tagLevel2");
       tag2.textContent = "Unlocked";
       tag2.className = "tag tag-unlocked";
+      const btn2 = document.getElementById("openLevel2Btn");
+      btn2.disabled = false;
     }
+
     if (progressState[3]) {
       const tag3 = document.getElementById("tagLevel3");
       tag3.textContent = "Unlocked";
       tag3.className = "tag tag-unlocked";
+      const btn3 = document.getElementById("openLevel3Btn");
+      btn3.disabled = false;
     }
 
     // Update progress bar
