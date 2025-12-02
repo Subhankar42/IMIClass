@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Agents in Excel: Copilot, Manus & Julius.AI</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #0b1020;
+      color: #f7f7ff;
+    }
+    header {
+      padding: 20px;
+      text-align: center;
+      background: linear-gradient(90deg, #1b4f72, #6c3483);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    header p {
+      margin: 5px 0 0;
+      font-size: 0.95rem;
+      opacity: 0.9;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 0 15px 40px;
+    }
+    .progress-wrapper {
+      margin-bottom: 20px;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 14px;
+      border-radius: 999px;
+      background: #20263d;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #1abc9c, #f1c40f);
+      transition: width 0.4s;
+    }
+    .progress-text {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      text-align: right;
+      opacity: 0.9;
+    }
+    .levels {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 800px) {
+      .levels {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .level-card {
+      background: #151a30;
+      border-radius: 10px;
+      border: 1px solid #28304a;
+      padding: 14px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 180px;
+    }
+    .level-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .tag-unlocked {
+      background: #145a32;
+      color: #eafaf1;
+    }
+    .tag-locked {
+      background: #641e16;
+      color: #f9ebea;
+    }
+    .level-body {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+    .code-input {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .code-input input {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #3c466a;
+      background: #0e1324;
+      color: #f7f7ff;
+      font-size: 0.85rem;
+    }
+    .code-input button {
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: none;
+      background: #1abc9c;
+      color: #081018;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    .code-input button:hover {
+      background: #17a589;
+    }
+    .status-message {
+      font-size: 0.8rem;
+      margin-top: 4px;
+      min-height: 16px;
+    }
+    .status-ok {
+      color: #2ecc71;
+    }
+    .status-error {
+      color: #e74c3c;
+    }
+    .iframe-wrapper {
+      margin-top: 16px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #28304a;
+    }
+    iframe {
+      width: 100%;
+      height: 440px;
+      border: 0;
+      background: white;
+    }
+    .badge-section {
+      margin-top: 30px;
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px dashed #44506f;
+      background: #101631;
+      font-size: 0.9rem;
+    }
+    .badge-list span {
+      display: inline-block;
+      margin: 4px 6px 0 0;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #1b263b;
+      border: 1px solid #36456b;
+      font-size: 0.8rem;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Agents in Excel: Copilot, Manus &amp; Julius.AI</h1>
+  <p>
+    Progress through three short modules that mirror a modern analytics workflow:
+    start with assisted insight using Copilot, move to structured automation with Manus,
+    and finish with decision-focused analysis using Julius.AI.
+  </p>
+</header>
+
+<div class="container">
+  <!-- Progress -->
+  <section class="progress-wrapper">
+    <div class="progress-bar-bg">
+      <div id="progressFill" class="progress-bar-fill"></div>
+    </div>
+    <div id="progressText" class="progress-text">Progress: 0 / 3 levels unlocked</div>
+  </section>
+
+  <!-- Levels overview / unlock controls -->
+  <section class="levels">
+    <!-- Level 1 (always unlocked) -->
+    <article class="level-card">
+      <div class="level-title">Level 1: Copilot – Assisted Insight</div>
+      <span class="tag tag-unlocked">Unlocked</span>
+      <div class="level-body">
+        In this level you will use Microsoft Copilot in Excel to explore data, generate formulas,
+        and obtain quick summaries using natural language. When you submit the quiz, you’ll receive
+        a code that unlocks Level 2 (Manus – Structured Automation).
+      </div>
+    </article>
+
+    <!-- Level 2 (locked until code) -->
+    <article class="level-card">
+      <div class="level-title">Level 2: Manus – Structured Automation</div>
+      <span id="tagLevel2" class="tag tag-locked">Locked</span>
+      <div class="level-body">
+        Here the focus shifts from one-off actions to repeatable processes. Use your completion
+        code from the Copilot quiz to unlock this level and work with Manus to orchestrate
+        multi-step Excel workflows.
+      </div>
+      <div class="code-input">
+        <input id="codeLevel1" type="text" placeholder="Enter code from Copilot (Level 1) confirmation" />
+        <button onclick="unlockLevel(2)">Unlock</button>
+      </div>
+      <div id="statusLevel2" class="status-message"></div>
+    </article>
+
+    <!-- Level 3 (locked until code) -->
+    <article class="level-card">
+      <div class="level-title">Level 3: Julius.AI – Analytical Intelligence</div>
+      <span id="tagLevel3" class="tag tag-locked">Locked</span>
+      <div class="level-body">
+        The final level focuses on deeper, decision-oriented analysis. Use the completion code
+        from the Manus quiz to unlock this level and apply Julius.AI to ask richer questions
+        of your data and interpret the results.
+      </div>
+      <div class="code-input">
+        <input id="codeLevel2" type="text" placeholder="Enter code from Manus (Level 2) confirmation" />
+        <button onclick="unlockLevel(3)">Unlock</button>
+      </div>
+      <div id="statusLevel3" class="status-message"></div>
+    </article>
+  </section>
+
+  <!-- Actual Google Forms (only visible when unlocked) -->
+  <section style="margin-top: 30px;">
+    <h2>Activity Area</h2>
+    <p style="font-size:0.9rem; opacity:0.9;">
+      Work through each level in order. Complete the quiz, note the code in the confirmation message,
+      and return here to unlock the next level.
+    </p>
+
+    <!-- Level 1 Form -->
+    <div class="iframe-wrapper">
+      <!-- Replace src with your Level 1 (Copilot) form embed src -->
+      <iframe 
+        src="https://docs.google.com/forms/d/e/1FAIpQLSeb0OnQCLD3nlercx2Gd9wXty6QWyvwq787mvXibVKs-chbXg/viewform"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- Level 2 Form -->
+    <div id="formLevel2" class="iframe-wrapper hidden">
+      <!-- Replace src with your Level 2 (Manus) form embed src -->
+      <iframe 
+        src="https://docs.google.com/forms/d/e/1FAIpQLSflVLl1iPh3KgXRiuh5IbgA7706j3CfrNGQxMXUCZzz-4G2ng/viewform"
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <!-- Level 3 Form -->
+    <div id="formLevel3" class="iframe-wrapper hidden">
+      <!-- Replace src with your Level 3 (Julius.AI) form embed src -->
+      <iframe 
+        src="https://docs.google.com/forms/d/e/1FAIpQLSeOtanrYiiUQ2KDAxhCJqYnkp92nehWCeSFozFUVBN75j5FmQ/viewform"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </section>
+
+  <!-- Badges -->
+  <section class="badge-section">
+    <strong>Your Progress Badges</strong>
+    <div class="badge-list" id="badgeList">
+      <span>Participant 🎓</span>
+    </div>
+    <p id="bonusText" class="hidden" style="margin-top:8px;">
+      You’ve completed all three levels. You are now ready to design your own agent‑assisted Excel workflows.
+    </p>
+  </section>
+</div>
+
+<script>
+  // Configure your codes here (must match the messages in Google Forms)
+  const expectedCodes = {
+    2: "COPILOT2025", // Code that unlocks Level 2 (from Copilot form)
+    3: "MANUS2025"    // Code that unlocks Level 3 (from Manus form)
+  };
+
+  // Track which levels are unlocked (1 is always unlocked)
+  const progressState = {
+    1: true,
+    2: false,
+    3: false
+  };
+
+  // Load saved progress from this browser
+  (function loadProgress() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("excelAgentsProgress"));
+      if (saved) {
+        progressState[2] = !!saved.level2;
+        progressState[3] = !!saved.level3;
+      }
+    } catch (e) {}
+    updateUI();
+  })();
+
+  function saveProgress() {
+    const toSave = {
+      level2: progressState[2],
+      level3: progressState[3]
+    };
+    localStorage.setItem("excelAgentsProgress", JSON.stringify(toSave));
+  }
+
+  function unlockLevel(level) {
+    const inputId = level === 2 ? "codeLevel1" : "codeLevel2";
+    const statusId = level === 2 ? "statusLevel2" : "statusLevel3";
+    const tagId = level === 2 ? "tagLevel2" : "tagLevel3";
+
+    const inputEl = document.getElementById(inputId);
+    const statusEl = document.getElementById(statusId);
+    const tagEl = document.getElementById(tagId);
+
+    const entered = (inputEl.value || "").trim().toUpperCase();
+    const expected = (expectedCodes[level] || "").toUpperCase();
+
+    if (!entered) {
+      statusEl.textContent = "Please enter the code shown at the end of the quiz.";
+      statusEl.className = "status-message status-error";
+      return;
+    }
+
+    if (entered === expected) {
+      progressState[level] = true;
+      saveProgress();
+      statusEl.textContent = "Level unlocked. Scroll down to access the activity.";
+      statusEl.className = "status-message status-ok";
+      tagEl.textContent = "Unlocked";
+      tagEl.className = "tag tag-unlocked";
+      updateUI();
+    } else {
+      statusEl.textContent = "The code does not match. Please check the confirmation message and try again.";
+      statusEl.className = "status-message status-error";
+    }
+  }
+
+  function updateUI() {
+    // Update forms visibility
+    document.getElementById("formLevel2").classList.toggle("hidden", !progressState[2]);
+    document.getElementById("formLevel3").classList.toggle("hidden", !progressState[3]);
+
+    // Update tags in case progress was loaded from storage
+    if (progressState[2]) {
+      const tag2 = document.getElementById("tagLevel2");
+      tag2.textContent = "Unlocked";
+      tag2.className = "tag tag-unlocked";
+    }
+    if (progressState[3]) {
+      const tag3 = document.getElementById("tagLevel3");
+      tag3.textContent = "Unlocked";
+      tag3.className = "tag tag-unlocked";
+    }
+
+    // Update progress bar
+    let unlockedCount = 0;
+    Object.keys(progressState).forEach(k => {
+      if (progressState[k]) unlockedCount++;
+    });
+    const percent = Math.round((unlockedCount / 3) * 100);
+    document.getElementById("progressFill").style.width = percent + "%";
+    document.getElementById("progressText").textContent =
+      `Progress: ${unlockedCount} / 3 levels unlocked (${percent}%)`;
+
+    // Update badges
+    const badgeList = document.getElementById("badgeList");
+    badgeList.innerHTML = '<span>Participant 🎓</span>';
+    if (progressState[1]) badgeList.innerHTML += '<span>Copilot Practitioner ✅</span>';
+    if (progressState[2]) badgeList.innerHTML += '<span>Manus Automator ⚙️</span>';
+    if (progressState[3]) badgeList.innerHTML += '<span>Julius.AI Analyst 📊</span>';
+
+    // Bonus message
+    const bonusText = document.getElementById("bonusText");
+    bonusText.classList.toggle("hidden", !progressState[3]);
+  }
+</script>
+</body>
+</html>
